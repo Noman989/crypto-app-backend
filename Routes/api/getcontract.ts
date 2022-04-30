@@ -1,5 +1,6 @@
 import { Router, Request, Response } from "express";
-import { IData, getContractInfo, IResData } from '../../ether';
+import { IData, web3GetContractInfo, ethersGetContractInfo, IResData } from '../../ether/ether';
+import { BackendSwitch } from '../../ether/backendSwitch';
 
 const GetContractRouter = Router();
 
@@ -10,7 +11,7 @@ GetContractRouter.get('/', async (req: Request, res: Response) => {
         address,
         chain,
     };
-    const resData: IResData = await getContractInfo(reqData);
+    const resData: IResData =  BackendSwitch.backend === 'ethersjs' ? await ethersGetContractInfo(reqData): await web3GetContractInfo(reqData);
     res.status(200).json({status: 'ok', data: resData});
 });
 
